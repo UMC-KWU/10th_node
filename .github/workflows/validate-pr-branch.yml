@@ -26,4 +26,6 @@ jobs:
       - name: Validate PR target branch
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
-        run: node .github/scripts/validate-pr-branch.js
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/UMC-KWU/10th_challengers/refs/heads/main/node.json -o .github/config/pr-validation.json
+          node .github/scripts/validate-pr-branch.js
