@@ -2,10 +2,10 @@
     1. 엔드포인트(Endpoint) 명명 규칙
     - 누가(Actor) 무엇을(Resource) 하는가?를 기준으로 계층을 나눈다.
     - 모든 API 앞에 /api/v1을 붙여 버전을 관리하고, 도메인별로 /users, /mission, /stores로 그룹화한다.
-    1. HTTP 메소드의 선택
+    2. HTTP 메소드의 선택
     - 데이터를 새로 만드는 것인가(POST)? 일부만 수정하는 것인가(PATCH)?
     - 회원가입, 리뷰 작성은 새로운 데이터를 생성하니까 POST, 미션 완료는 기존 ‘도전 중’ 상태를 ‘완료’로 바꾸는 것이니까 PATCH
-    1. 인증(Authorization)의 유무
+    3. 인증(Authorization)의 유무
     - 이 정보를 아무나 봐도 되는 것인가? 아니면 개인정보인가?
     - 회원가입을 제외한 모든 마이페이지, 미션 성공, 리뷰 작성에는 Authorization 헤더를 필수값으로 넣는다.(보안을 위해)
 - 회원가입
@@ -85,21 +85,27 @@
     - **Method**: `GET`
     - **Request Header**: `Authorization: Bearer {accessToken}`
     - **Query String**: `status=CHALLENGING` (또는 `COMPLETE`)
+    - lastId: 마지막으로 조회된 미션의 ID (커서)
+    - size: 한 페이지당 불러올 데이터 개수 (기본값 10)
     - **Request Body**: 필요 없음
     - **Response Body**
     
     ```json
-    {
-      "success": true,
-      "code": "S200",
-      "data": {
-        "status": "CHALLENGING",
-        "count": 3,
-        "missions": [
-          { "missionId": 10, "storeName": "광운대카페", "content": "아메리카노 1잔", "reward": 100 }
-        ]
-      }
+      {
+    "success": true,
+    "code": "S200",
+    "data": {
+      "status": "CHALLENGING",
+      "totalCount": 45, 
+      "missions": [
+        { "missionId": 10, "storeName": "광운대카페", "content": "아메리카노 1잔", "reward": 100 }
+      ],
+      "nextCursor": {
+        "lastId": 10
+      },
+      "hasNext": true
     }
+  }
     ```
     
     - 에러 처리
